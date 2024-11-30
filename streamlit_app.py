@@ -43,3 +43,5 @@ st.write('Random Movie Roulette: randomly choose a good movie to watch !')
 if st.button("Try again ?"):
     choose_next()
     st.rerun()
+
+st.caption('Information courtesy of IMDb (https://www.imdb.com) and TMDB (https://www.themoviedb.org). Used with permission.')
