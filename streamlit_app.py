@@ -11,7 +11,13 @@ st.title('What should I watch?')
 def init_data():
     return core.load_good_movies()
 
-movies, ratings, sequence = init_data()
+movies, ratings = init_data()
+
+@st.cache_data(ttl="1d")
+def randomize_sequence():
+    return core.randomize_sequence(len(movies.index))
+
+sequence = randomize_sequence()
 
 @st.cache_data
 def get_markdown(random_index):
