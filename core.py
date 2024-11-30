@@ -75,6 +75,7 @@ def get_markdown(random_movie, ratings, tmdb_api_key):
 
 ![{random_movie['primaryTitle']}]({poster_path})
 
+*This app uses the TMDB API but is not endorsed or certified by TMDB.*
 '''
     
     return markdown
