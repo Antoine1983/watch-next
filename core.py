@@ -9,17 +9,14 @@ import functools
 data_folder = './data/'
 
 def load_good_movies():
-
-    # Movies selection
     movies = pandas.read_parquet(f'{data_folder}good_movies.parquet')
     ratings = pandas.read_parquet(f'{data_folder}good_ratings.parquet')
+    return movies, ratings
 
-    # Random sequence 
-    total_movies = len(movies.index)
+def randomize_sequence(total_movies):
     sequence = list(range(0, total_movies))
     random.shuffle(sequence)
-
-    return movies, ratings, sequence
+    return sequence
 
 def get_poster_url(movie_info):
     img_url = ''
@@ -75,7 +72,6 @@ def get_markdown(random_movie, ratings, tmdb_api_key):
 
 ![{random_movie['primaryTitle']}]({poster_path})
 
-*This app uses the TMDB API but is not endorsed or certified by TMDB.*
 '''
     
     return markdown
