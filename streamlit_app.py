@@ -13,6 +13,11 @@ def init_data():
 
 movies, ratings, sequence = init_data()
 
+@st.cache_data
+def get_markdown(random_index):
+    random_movie = movies.iloc[random_index]
+    return core.get_markdown(random_movie, ratings, tmdb_api_key)
+
 if 'current_index' not in st.session_state:
     st.session_state.current_index = 0
     
@@ -22,10 +27,9 @@ def choose_next():
         st.session_state.current_index = 0
 
 random_index = sequence[st.session_state.current_index]
-random_movie = movies.iloc[random_index]
 
 with st.spinner('Wait for it...'):
-    markdown = core.get_markdown(random_movie, ratings, tmdb_api_key)
+    markdown = core.get_markdown(random_index)
     st.write(markdown)
 
 st.write('Random Movie Roulette: randomly choose a good movie to watch !') 
