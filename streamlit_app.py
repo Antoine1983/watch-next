@@ -29,7 +29,7 @@ def choose_next():
 random_index = sequence[st.session_state.current_index]
 
 with st.spinner('Wait for it...'):
-    markdown = core.get_markdown(random_index)
+    markdown = get_markdown(random_index)
     st.write(markdown)
 
 st.write('Random Movie Roulette: randomly choose a good movie to watch !') 
