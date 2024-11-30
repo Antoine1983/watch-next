@@ -72,6 +72,8 @@ def get_markdown(random_movie, ratings, tmdb_api_key):
 
 ![{random_movie['primaryTitle']}]({poster_path})
 
+* Information courtesy of IMDb (https://www.imdb.com) and TMDB (https://www.themoviedb.org). Used with permission. *
+
 '''
     
     return markdown
