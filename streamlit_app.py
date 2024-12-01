@@ -43,7 +43,7 @@ rating = ratings.loc[ratings['tconst'] == tconst].iloc[0]
 imdb_link = f'https://www.imdb.com/title/{tconst}/?'
 
 markdown = f'''
-**IMDB** / **Rating**: {rating['averageRating']}, **Votes**: {rating['numVotes']}, **View**: [link]({imdb_link}).
+**IMDB** / **Rating**: {rating['averageRating']}, **Votes**: {rating['numVotes'] / 1000:.1f}k, **View**: [link]({imdb_link}).
 
 **Original Title**: {random_movie['originalTitle']}
 **Year**: {random_movie['startYear']}
