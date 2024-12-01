@@ -7,7 +7,7 @@ st.set_page_config(page_title='What should I watch?')
                    
 st.title('What should I watch?')
 
-@st.cache_data(persist="disk")
+@st.cache_data
 def init_data():
     return core.load_good_movies()
 

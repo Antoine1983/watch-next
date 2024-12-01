@@ -1,10 +1,6 @@
 import random
-import urllib
 import requests
 import pandas
-import os
-import json
-import functools
 
 data_folder = './data/'
 
