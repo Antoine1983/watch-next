@@ -72,4 +72,6 @@ if st.button("Try again ?", type="primary"):
     choose_next()
     st.rerun()
 
-st.caption('Information courtesy of IMDb (https://www.imdb.com) and TMDB (https://www.themoviedb.org). Used with permission.')
+st.caption('Information courtesy of IMDb (https://www.imdb.com) and TMDB (https://www.themoviedb.org).')
+
+st.caption('Used with permission for non-commercial usage.')
