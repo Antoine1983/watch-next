@@ -69,9 +69,7 @@ with st.spinner('Wait for it...'):
 
 st.write('Random Movie Roulette: randomly choose a good movie to watch !') 
 
-if st.button("Try again ?", type="primary"):
-    choose_next()
-    st.rerun()
+st.button("Try again ?", type="primary", on_click='choose_next')
 
 st.caption('Information courtesy of IMDb (https://www.imdb.com) and TMDB (https://www.themoviedb.org).')
 
