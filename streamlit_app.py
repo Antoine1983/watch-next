@@ -36,34 +36,36 @@ random_index = sequence[st.session_state.current_index]
 random_movie = movies.iloc[random_index]
 tconst = random_movie['tconst']
 
-# Get info
-movie_info = get_info_from_api(tconst)
+with st.spinner('Wait for it...'):
 
-imdb_link = f'https://www.imdb.com/title/{tconst}/?'
+    # Get info
+    movie_info = get_info_from_api(tconst)
 
-markdown = f'''
-**IMDB** / **Rating**: {random_movie['averageRating']}, **Votes**: {random_movie['numVotes'] / 1000:.1f}k, **View**: [link]({imdb_link}).
+    imdb_link = f'https://www.imdb.com/title/{tconst}/?'
 
-**Original Title**: {random_movie['originalTitle']},
-**Year**: {random_movie['startYear']},
-**Runtime (Minutes)**: {random_movie['runtimeMinutes']},
-**Genres**: {random_movie['genres']}
-'''
+    markdown = f'''
+    **IMDB** / **Rating**: {random_movie['averageRating']}, **Votes**: {random_movie['numVotes'] / 1000:.1f}k, **View**: [link]({imdb_link}).
 
-col1, col2 = st.columns(2)
+    **Original Title**: {random_movie['originalTitle']},
+    **Year**: {random_movie['startYear']},
+    **Runtime (Minutes)**: {random_movie['runtimeMinutes']},
+    **Genres**: {random_movie['genres']}
+    '''
 
-# Show details
-with col1:
-    st.header(random_movie['primaryTitle'])
-    st.markdown(markdown)
-    st.subheader('Overview')
-    st.write(movie_info['overview'])
+    col1, col2 = st.columns(2)
 
-# Show poster
-with col2:
-    poster_caption = f'''{random_movie['primaryTitle']} ({random_movie['startYear']})'''
-    poster_url = data_api.get_poster_url(movie_info)
-    st.markdown(f"[![{poster_caption}]({poster_url})]({imdb_link})")
+    # Show details
+    with col1:
+        st.header(random_movie['primaryTitle'])
+        st.markdown(markdown)
+        st.subheader('Overview')
+        st.write(movie_info['overview'])
+
+    # Show poster
+    with col2:
+        poster_caption = f'''{random_movie['primaryTitle']} ({random_movie['startYear']})'''
+        poster_url = data_api.get_poster_url(movie_info)
+        st.markdown(f"[![{poster_caption}]({poster_url})]({imdb_link})")
 
 st.write('Random Movie Roulette: randomly choose a good movie to watch !') 
 
