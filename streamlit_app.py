@@ -11,7 +11,7 @@ st.title('What should I watch?')
 def init_data():
     return data_api.load_good_movies()
 
-movies, ratings = init_data()
+movies = init_data()
 
 @st.cache_data(ttl="1h")
 def randomize_sequence():
@@ -38,12 +38,11 @@ tconst = random_movie['tconst']
 
 # Get info
 movie_info = get_info_from_api(tconst)
-rating = ratings.loc[ratings['tconst'] == tconst].iloc[0]
 
 imdb_link = f'https://www.imdb.com/title/{tconst}/?'
 
 markdown = f'''
-**IMDB** / **Rating**: {rating['averageRating']}, **Votes**: {rating['numVotes'] / 1000:.1f}k, **View**: [link]({imdb_link}).
+**IMDB** / **Rating**: {random_movie['averageRating']}, **Votes**: {random_movie['numVotes'] / 1000:.1f}k, **View**: [link]({imdb_link}).
 
 **Original Title**: {random_movie['originalTitle']},
 **Year**: {random_movie['startYear']},

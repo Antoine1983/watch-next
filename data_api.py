@@ -5,9 +5,7 @@ import pandas
 data_folder = './data/'
 
 def load_good_movies():
-    movies = pandas.read_parquet(f'{data_folder}good_movies.parquet')
-    ratings = pandas.read_parquet(f'{data_folder}good_ratings.parquet')
-    return movies, ratings
+    return pandas.read_parquet(f'{data_folder}good_movies.parquet')
 
 def randomize_sequence(total_movies):
     sequence = list(range(0, total_movies))
