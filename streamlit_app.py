@@ -5,13 +5,13 @@ st.set_page_config(page_title='What should I watch?')
                    
 st.title('What should I watch?')
 
-#@st.cache_data
+@st.cache_data
 def init_data():
     return data_api.load_good_movies()
 
 movies = init_data()
 
-# @st.cache_data(ttl="1h")
+@st.cache_data(ttl="1h")
 def randomize_sequence():
     return data_api.randomize_sequence(len(movies.index))
 
