@@ -1,4 +1,3 @@
-import random
 import pandas
 
 data_folder = './data/'
