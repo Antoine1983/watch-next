@@ -37,11 +37,12 @@ with st.spinner('Wait for it...'):
     markdown = f'''
     **IMDB** / **Rating**: {random_movie['averageRating']}, **Votes**: {random_movie['numVotes'] / 1000:.1f}k, **View**: [link]({imdb_link}).
 
-    **Original Title**: {random_movie['originalTitle']},
     **Country**: {random_movie['origin_country']},
     **Year**: {random_movie['startYear']},
     **Runtime (Minutes)**: {random_movie['runtimeMinutes']},
     **Genres**: {random_movie['genres']}
+
+    **Original Title**: {random_movie['originalTitle']}
     '''
 
     col1, col2 = st.columns(2)
