@@ -27,10 +27,21 @@ with st.sidebar:
     st.header('Filters')
 
     # Filter on rating
-    minimum_rating = st.number_input("Minimum rating", min_value=7, max_value=10, value=7)
+    minimum_rating = st.number_input(
+        "Minimum rating", 
+        min_value=7.0, 
+        max_value=10.0, 
+        value=7.0,
+        step=0.5
+    )
 
     # Filter on start year
-    from_year = st.number_input("From year", min_value=1970, value=1970)
+    from_year = st.number_input(
+        "From year",
+        min_value=1970,
+        value=1970,
+        step=10
+    )
 
     # Filter on regions
     default_region_list = ['Americas', 'Europe', 'Asia', 'Oceania', 'Africa']
