@@ -1,27 +1,21 @@
 import streamlit as st
 import data_api
 
-tmdb_api_key = st.secrets["TMDB_API_KEY"]
-
 st.set_page_config(page_title='What should I watch?')
                    
 st.title('What should I watch?')
 
-@st.cache_data
+#@st.cache_data
 def init_data():
     return data_api.load_good_movies()
 
 movies = init_data()
 
-@st.cache_data(ttl="1h")
+# @st.cache_data(ttl="1h")
 def randomize_sequence():
     return data_api.randomize_sequence(len(movies.index))
 
 sequence = randomize_sequence()
-
-@st.cache_data
-def get_info_from_api(tconst):
-    return data_api.get_info_from_api(tconst, tmdb_api_key)
 
 if 'current_index' not in st.session_state:
     st.session_state.current_index = 0
@@ -38,15 +32,13 @@ tconst = random_movie['tconst']
 
 with st.spinner('Wait for it...'):
 
-    # Get info
-    movie_info = get_info_from_api(tconst)
-
     imdb_link = f'https://www.imdb.com/title/{tconst}/?'
 
     markdown = f'''
     **IMDB** / **Rating**: {random_movie['averageRating']}, **Votes**: {random_movie['numVotes'] / 1000:.1f}k, **View**: [link]({imdb_link}).
 
     **Original Title**: {random_movie['originalTitle']},
+    **Country**: {random_movie['origin_country']},
     **Year**: {random_movie['startYear']},
     **Runtime (Minutes)**: {random_movie['runtimeMinutes']},
     **Genres**: {random_movie['genres']}
@@ -59,12 +51,12 @@ with st.spinner('Wait for it...'):
         st.header(random_movie['primaryTitle'])
         st.markdown(markdown)
         st.subheader('Overview')
-        st.write(movie_info['overview'])
+        st.write(random_movie['overview'])
 
     # Show poster
     with col2:
         poster_caption = f'''{random_movie['primaryTitle']} ({random_movie['startYear']})'''
-        poster_url = data_api.get_poster_url(movie_info)
+        poster_url = data_api.get_poster_url(random_movie)
         st.markdown(f"[![{poster_caption}]({poster_url})]({imdb_link})")
 
 st.write('Random Movie Roulette: randomly choose a good movie to watch !') 
