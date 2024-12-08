@@ -6,19 +6,36 @@ import random
 def init_data():
     return data_api.load_good_movies()
 
+#@st.cache_data
+def get_filtered_movies(
+        from_year,
+        minimum_votes,
+        region_list,
+        minimum_rating,
+        categories_list
+    ):
+
+    movies = init_data()
+    c1 = movies['startYear'] >= from_year
+    c2 = movies['numVotes'] >= minimum_votes
+    c3 = movies['country_region'].isin(region_list)
+    c4 = movies['averageRating'] >= minimum_rating
+    c5 = movies['category'].isin(categories_list)
+    return movies.loc[c1 & c2 & c3 & c4 & c5]
+
 @st.cache_data(ttl="1h")
 def randomize_sequence(total_movies):
     sequence = list(range(0, total_movies))
     random.shuffle(sequence)
     return sequence
 
+def choose_next():
+    st.session_state.current_index += 1
+
 st.set_page_config(
     page_title='What should I watch?',
     initial_sidebar_state='auto'
 )
-
-# Init data
-movies = init_data()
 
 st.title('What should I watch?')
 
@@ -44,7 +61,7 @@ with st.sidebar:
     )
 
     # Filter on regions
-    default_region_list = ['Americas', 'Europe', 'Asia', 'Oceania', 'Africa']
+    default_region_list = ['Americas', 'Europe', 'Asia', 'Oceania', 'Africa', 'Other']
     region_list = st.multiselect(
         'Regions', 
         default_region_list, 
@@ -53,6 +70,7 @@ with st.sidebar:
 
     # Filter on number of votes
     votes_classes = {
+        "5k": 5000,
         "10k": 10000,
         "25k": 25000,
         "100k": 100000,
@@ -64,30 +82,46 @@ with st.sidebar:
     )
     minimum_votes = votes_classes[minimum_votes_class]
 
-    # Apply filters
-    c1 = movies['startYear'] >= from_year
-    c2 = movies['numVotes'] >= minimum_votes
-    c3 = movies['country_region'].isin(region_list)
-    c4 = movies['averageRating'] >= minimum_rating
-    filtered_movies = movies.loc[c1 & c2 & c3 & c4]
+    # Filter on categories
+    default_categories = [
+        'Crime/Thriller',
+        'Romance',
+        'Other',
+        'Action/Adventure',
+        'Comedy',
+        'Family',
+        'Fantasy/Sci-Fi'
+    ]
+    categories_list = st.multiselect(
+        'Categories', 
+        default_categories, 
+        default=default_categories
+    )
+
+    # Get filtered movies
+    filtered_movies = get_filtered_movies(
+        from_year,
+        minimum_votes,
+        region_list,
+        minimum_rating,
+        categories_list
+    )
 
     # Display total
     total_movies = len(filtered_movies.index)
     st.write(f'Total movies: {total_movies}')
 
-
+# Get random sequence
 sequence = randomize_sequence(total_movies)
 
 
-if 'current_index' not in st.session_state:
-    st.session_state.current_index = 0
-
-def choose_next():
-    st.session_state.current_index += 1
-    if st.session_state.current_index >= len(sequence):
-        st.session_state.current_index = 0
-
 if total_movies > 0:
+
+    # Manage current index
+    if 'current_index' not in st.session_state:
+        st.session_state.current_index = 0
+    if st.session_state.current_index >= total_movies:
+        st.session_state.current_index = 0
 
     # Get movie
     random_index = sequence[st.session_state.current_index]
@@ -105,6 +139,8 @@ if total_movies > 0:
         **Country**: {random_movie['country_name']},
         **Year**: {random_movie['startYear']},
         **Runtime (Minutes)**: {random_movie['runtimeMinutes']},
+
+        **Category**: {random_movie['category']},
         **Genres**: {random_movie['genres']}
 
         **Original Title**: {random_movie['originalTitle']}
