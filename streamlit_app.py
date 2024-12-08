@@ -3,10 +3,6 @@ import data_api
 import random
 
 @st.cache_data
-def init_data():
-    return data_api.load_good_movies()
-
-#@st.cache_data
 def get_filtered_movies(
         from_year,
         minimum_votes,
@@ -14,8 +10,7 @@ def get_filtered_movies(
         minimum_rating,
         categories_list
     ):
-
-    movies = init_data()
+    movies = data_api.load_good_movies()
     c1 = movies['startYear'] >= from_year
     c2 = movies['numVotes'] >= minimum_votes
     c3 = movies['country_region'].isin(region_list)
