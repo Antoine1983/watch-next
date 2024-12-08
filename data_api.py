@@ -7,7 +7,8 @@ genre_mapping = {
     "Comedy": ["Comedy"],
     "Action/Adventure": ["Action", "Adventure", "War", "Western"],
     "Crime/Thriller": ["Crime", "Thriller", "Mystery"],
-    "Fantasy/Sci-Fi": ["Sci-Fi", "Fantasy"],
+    "Sci-Fi": ["Sci-Fi"],
+    "Fantasy": ["Fantasy"],
     "Family": ["Animation", "Family"],
     "Other": ["Drama"]
 }
@@ -27,7 +28,8 @@ default_categories = [
     'Action/Adventure',
     'Comedy',
     'Family',
-    'Fantasy/Sci-Fi',
+    'Sci-Fi',
+    'Fantasy',
     'Other'
 ]
 
