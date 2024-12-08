@@ -63,6 +63,22 @@ with st.sidebar:
         default=default_region_list
     )
 
+    # Filter on categories
+    default_categories = [
+        'Crime/Thriller',
+        'Romance',
+        'Action/Adventure',
+        'Comedy',
+        'Family',
+        'Fantasy/Sci-Fi',
+        'Other'
+    ]
+    categories_list = st.multiselect(
+        'Categories', 
+        default_categories, 
+        default=default_categories
+    )
+
     # Filter on number of votes
     votes_classes = {
         "5k": 5000,
@@ -76,22 +92,6 @@ with st.sidebar:
         options=votes_classes,
     )
     minimum_votes = votes_classes[minimum_votes_class]
-
-    # Filter on categories
-    default_categories = [
-        'Crime/Thriller',
-        'Romance',
-        'Other',
-        'Action/Adventure',
-        'Comedy',
-        'Family',
-        'Fantasy/Sci-Fi'
-    ]
-    categories_list = st.multiselect(
-        'Categories', 
-        default_categories, 
-        default=default_categories
-    )
 
     # Get filtered movies
     filtered_movies = get_filtered_movies(
