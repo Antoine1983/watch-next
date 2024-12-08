@@ -3,19 +3,19 @@ import data_api
 import random
 
 @st.cache_data
-def get_filtered_movies(
-        from_year,
-        minimum_votes,
-        region_list,
-        minimum_rating,
-        categories_list
-    ):
-    movies = data_api.load_good_movies()
+def load_good_movies():
+    return data_api.load_good_movies()
+
+@st.cache_data
+def get_filtered_movies(from_year, minimum_votes, region_list, minimum_rating, categories_list):
+    movies = load_good_movies()
+    movies['genres_list'] = movies['genres'].str.split(',')
     c1 = movies['startYear'] >= from_year
     c2 = movies['numVotes'] >= minimum_votes
     c3 = movies['country_region'].isin(region_list)
     c4 = movies['averageRating'] >= minimum_rating
-    c5 = movies['category'].isin(categories_list)
+    check_list = sum([data_api.genre_mapping[category] for category in categories_list], [])
+    c5 = movies['genres_list'].apply(lambda x: any(item in check_list for item in x))
     return movies.loc[c1 & c2 & c3 & c4 & c5]
 
 @st.cache_data(ttl="1h")
@@ -56,42 +56,25 @@ with st.sidebar:
     )
 
     # Filter on regions
-    default_region_list = ['Americas', 'Europe', 'Asia', 'Oceania', 'Africa', 'Other']
     region_list = st.multiselect(
         'Regions', 
-        default_region_list, 
-        default=default_region_list
+        data_api.default_region_list, 
+        default=data_api.default_region_list
     )
 
     # Filter on categories
-    default_categories = [
-        'Crime/Thriller',
-        'Romance',
-        'Action/Adventure',
-        'Comedy',
-        'Family',
-        'Fantasy/Sci-Fi',
-        'Other'
-    ]
     categories_list = st.multiselect(
         'Categories', 
-        default_categories, 
-        default=default_categories
+        data_api.default_categories, 
+        default=data_api.default_categories
     )
 
     # Filter on number of votes
-    votes_classes = {
-        "5k": 5000,
-        "10k": 10000,
-        "25k": 25000,
-        "100k": 100000,
-        "500k": 500000
-    }
     minimum_votes_class = st.select_slider(
         "Minimum number of votes",
-        options=votes_classes,
+        options=data_api.default_votes_classes,
     )
-    minimum_votes = votes_classes[minimum_votes_class]
+    minimum_votes = data_api.default_votes_classes[minimum_votes_class]
 
     # Get filtered movies
     filtered_movies = get_filtered_movies(
@@ -134,8 +117,6 @@ if total_movies > 0:
         **Country**: {random_movie['country_name']},
         **Year**: {random_movie['startYear']},
         **Runtime (Minutes)**: {random_movie['runtimeMinutes']},
-
-        **Category**: {random_movie['category']},
         **Genres**: {random_movie['genres']}
 
         **Original Title**: {random_movie['originalTitle']}
