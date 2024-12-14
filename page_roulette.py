@@ -29,11 +29,11 @@ def choose_next():
 
 st.set_page_config(
     page_icon=":movie_camera:",
-    page_title='What should I watch?',
+    page_title='What should I watch? Movie roulette',
     initial_sidebar_state='auto'
 )
 
-st.title('What should I watch?')
+st.title('Movie roulette')
 
 with st.sidebar:
 
@@ -85,7 +85,6 @@ with st.sidebar:
         minimum_rating,
         categories_list
     )
-
 
     # Display total
     total_movies = len(filtered_movies.index)

@@ -49,4 +49,3 @@ def get_poster_url(movie_info):
     if 'poster_path' in movie_info:
         img_url = f'''https://image.tmdb.org/t/p/w500{movie_info['poster_path']}'''
     return img_url
-
