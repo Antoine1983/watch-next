@@ -29,11 +29,11 @@ def choose_next():
 
 st.set_page_config(
     page_icon=":movie_camera:",
-    page_title='What should I watch? Movie roulette',
+    page_title='What should I watch?',
     initial_sidebar_state='auto'
 )
 
-st.title('Movie roulette')
+st.title('What should I watch?')
 
 with st.sidebar:
 
