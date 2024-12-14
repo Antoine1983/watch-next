@@ -17,6 +17,7 @@ def get_filtered_movies(from_year, minimum_votes, region_list, categories_list):
 
 def get_top_movies(from_year, minimum_votes, region_list, max_movies, categories_list):
     display_columns = [
+        'rank',
         'primaryTitle',
         'averageRating',
         'numVotesK',
@@ -24,12 +25,12 @@ def get_top_movies(from_year, minimum_votes, region_list, max_movies, categories
         'url'
     ]
     filtered_movies = get_filtered_movies(from_year, minimum_votes, region_list, categories_list)
-    filtered_movies['url'] = filtered_movies['tconst'].map('https://www.imdb.com/title/{}/?'.format)
-    filtered_movies['numVotesK'] = filtered_movies['numVotes'] / 1000
-    return filtered_movies[display_columns].sort_values(by='averageRating', ascending=False).head(max_movies)
+    best_movies = filtered_movies.sort_values(by='averageRating', ascending=False).head(max_movies)
+    best_movies['rank'] = range(1, len(best_movies) + 1)
+    best_movies['url'] = best_movies['tconst'].map('https://www.imdb.com/title/{}/?'.format)
+    best_movies['numVotesK'] = best_movies['numVotes'] / 1000
+    return best_movies[display_columns]
 
-
-st.title('Top movies')
 
 with st.sidebar:
 
@@ -87,12 +88,19 @@ with st.sidebar:
     total_movies = len(best_movies.index)
     st.write(f'Total movies: {total_movies}')
 
+
+st.title(f'Top {total_movies} movies by rating')
+
+# Show the table
 st.dataframe(
     best_movies, 
     hide_index=True,
     use_container_width=True,
     column_config={
-        "primaryTitle": "Titre",
+        "rank" : st.column_config.NumberColumn("Rank"),
+        "primaryTitle": st.column_config.TextColumn(
+            "Title"
+        ),
         "averageRating": st.column_config.NumberColumn(
             "Average rating",
             format="%.1f ⭐",
@@ -108,7 +116,3 @@ st.dataframe(
     },
     height=total_movies * 40
 )
-
-st.caption(f'Top {total_movies} movies ranked by average rating.')
-
-# st.pyplot(movies['startYear'].hist(bins=12))

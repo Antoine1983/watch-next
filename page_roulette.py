@@ -112,7 +112,9 @@ if total_movies > 0:
         imdb_link = f'https://www.imdb.com/title/{tconst}/?'
 
         markdown = f'''
-        **IMDB** / **Rating**: {random_movie['averageRating']}, **Votes**: {random_movie['numVotes'] / 1000:.1f}k, **View**: [link]({imdb_link}).
+        **IMDB** / **Rating**: {random_movie['averageRating']}, 
+        **Votes**: {random_movie['numVotes'] / 1000:.1f}k, 
+        **View**: [link]({imdb_link}).
 
         **Region**: {random_movie['country_region']},
         **Country**: {random_movie['country_name']},
