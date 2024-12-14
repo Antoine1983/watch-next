@@ -10,7 +10,22 @@ movies = load_good_movies()
 
 st.title("Statistics")
 
-fig, ax = plt.subplots()
-ax.hist(movies['startYear'], bins=12)
+st.header("Distribution per average rating")
 
-st.pyplot(fig)
+fig1, ax1 = plt.subplots()
+ax1.hist(movies['averageRating'], bins=12)
+st.pyplot(fig1)
+
+st.header("Distribution per year")
+
+fig2, ax2 = plt.subplots()
+ax2.hist(movies['startYear'], bins=12)
+st.pyplot(fig2)
+
+
+st.header("Distribution per region")
+
+fig3, ax3 = plt.subplots()
+c = movies['country_region'].value_counts()
+ax3.pie(c, labels=c.index)
+st.pyplot(fig3)
