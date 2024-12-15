@@ -1,6 +1,7 @@
 import streamlit as st
 import data_api
 
+
 @st.cache_data
 def load_good_movies():
     return data_api.load_good_movies()
@@ -15,21 +16,12 @@ def get_filtered_movies(from_year, minimum_votes, region_list, categories_list):
     c5 = movies['genres_list'].apply(lambda x: any(item in check_list for item in x))
     return movies.loc[c1 & c2 & c3 & c5]
 
-def get_top_movies(from_year, minimum_votes, region_list, max_movies, categories_list):
-    display_columns = [
-        'rank',
-        'primaryTitle',
-        'averageRating',
-        'numVotesK',
-        'startYear',
-        'url'
-    ]
+@st.cache_data
+def get_top_movies(from_year, minimum_votes, region_list, categories_list):
     filtered_movies = get_filtered_movies(from_year, minimum_votes, region_list, categories_list)
-    best_movies = filtered_movies.sort_values(by='averageRating', ascending=False).head(max_movies)
+    best_movies = filtered_movies.sort_values(by='averageRating', ascending=False)
     best_movies['rank'] = range(1, len(best_movies) + 1)
-    best_movies['url'] = best_movies['tconst'].map('https://www.imdb.com/title/{}/?'.format)
-    best_movies['numVotesK'] = best_movies['numVotes'] / 1000
-    return best_movies[display_columns]
+    return best_movies
 
 
 with st.sidebar:
@@ -38,11 +30,11 @@ with st.sidebar:
 
     # Filter on rating
     max_movies = st.number_input(
-        "Maximum number of movies", 
-        min_value=50, 
-        max_value=500, 
-        value=100,
-        step=50
+        "Movies per page",
+        min_value=10,
+        max_value=250,
+        value=25,
+        step=5
     )
 
     # Filter on start year
@@ -55,15 +47,15 @@ with st.sidebar:
 
     # Filter on regions
     region_list = st.multiselect(
-        'Regions', 
-        data_api.default_region_list, 
+        'Regions',
+        data_api.default_region_list,
         default=data_api.default_region_list
     )
 
     # Filter on categories
     categories_list = st.multiselect(
-        'Categories', 
-        data_api.default_categories, 
+        'Categories',
+        data_api.default_categories,
         default=data_api.default_categories
     )
 
@@ -80,7 +72,6 @@ with st.sidebar:
         from_year,
         minimum_votes,
         region_list,
-        max_movies,
         categories_list
     )
 
@@ -89,30 +80,51 @@ with st.sidebar:
     st.write(f'Total movies: {total_movies}')
 
 
-st.title(f'Top {total_movies} movies by rating')
+st.title(f'Top movies by rating', anchor='top-of-page')
 
-# Show the table
-st.dataframe(
-    best_movies, 
-    hide_index=True,
-    use_container_width=True,
-    column_config={
-        "rank" : st.column_config.NumberColumn("Rank"),
-        "primaryTitle": st.column_config.TextColumn(
-            "Title"
-        ),
-        "averageRating": st.column_config.NumberColumn(
-            "Average rating",
-            format="%.1f ⭐",
-        ),
-        "url": st.column_config.LinkColumn("IMDB", display_text='View'),
-        "numVotesK": st.column_config.ProgressColumn(
-            "Votes",
-            min_value=5,
-            max_value=500,
-            format="%.1fk"
-        ),
-        "startYear": st.column_config.NumberColumn("Year", format="%d")
-    },
-    height=total_movies * 40
-)
+# Pagination
+current_page = st.selectbox('Page', options=range(1, int(total_movies / max_movies + 2)))
+from_item = max_movies * (current_page - 1)
+to_item = max_movies * current_page
+
+# Show the movies
+for index, movie in best_movies[from_item:to_item].iterrows():
+
+    st.divider()
+
+    tconst = movie['tconst']
+    imdb_link = f'https://www.imdb.com/title/{tconst}/?'
+
+    markdown = f'''
+    **IMDB** / **Rating**: {movie['averageRating']} ⭐,
+    **Votes**: {movie['numVotes'] / 1000:.1f}k,
+    **View**: [link]({imdb_link}).
+
+    **Region**: {movie['country_region']},
+    **Country**: {movie['country_name']},
+    **Year**: {movie['startYear']},
+    **Runtime (Minutes)**: {movie['runtimeMinutes']},
+    **Genres**: {movie['genres']}
+
+    **Original Title**: {movie['originalTitle']}
+    '''
+
+
+    col1, col2 = st.columns([3, 1])
+
+    # Show details
+    with col1:
+        st.subheader(f'''{movie['rank']} - {movie['primaryTitle']}''')
+        st.markdown(markdown)
+        with st.expander("Overview"):
+            st.write(movie['overview'])
+
+    # Show poster
+    with col2:
+        poster_caption = f'''{movie['primaryTitle']} ({movie['startYear']})'''
+        poster_url = data_api.get_poster_url(movie)
+        st.markdown(f"[![{poster_caption}]({poster_url})]({imdb_link})")
+
+st.divider()
+
+st.write('<a href="#top-of-page">Scroll up</a>', unsafe_allow_html = True)

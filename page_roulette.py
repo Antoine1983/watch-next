@@ -41,9 +41,9 @@ with st.sidebar:
 
     # Filter on rating
     minimum_rating = st.number_input(
-        "Minimum rating", 
-        min_value=7.0, 
-        max_value=10.0, 
+        "Minimum rating",
+        min_value=7.0,
+        max_value=10.0,
         value=7.0,
         step=0.5
     )
@@ -58,15 +58,15 @@ with st.sidebar:
 
     # Filter on regions
     region_list = st.multiselect(
-        'Regions', 
-        data_api.default_region_list, 
+        'Regions',
+        data_api.default_region_list,
         default=data_api.default_region_list
     )
 
     # Filter on categories
     categories_list = st.multiselect(
-        'Categories', 
-        data_api.default_categories, 
+        'Categories',
+        data_api.default_categories,
         default=data_api.default_categories
     )
 
@@ -93,14 +93,13 @@ with st.sidebar:
 # Get random sequence
 sequence = randomize_sequence(total_movies)
 
+# Manage current index
+if 'current_index' not in st.session_state:
+    st.session_state.current_index = 0
+if st.session_state.current_index >= total_movies:
+    st.session_state.current_index = 0
 
 if total_movies > 0:
-
-    # Manage current index
-    if 'current_index' not in st.session_state:
-        st.session_state.current_index = 0
-    if st.session_state.current_index >= total_movies:
-        st.session_state.current_index = 0
 
     # Get movie
     random_index = sequence[st.session_state.current_index]
@@ -112,8 +111,8 @@ if total_movies > 0:
         imdb_link = f'https://www.imdb.com/title/{tconst}/?'
 
         markdown = f'''
-        **IMDB** / **Rating**: {random_movie['averageRating']}, 
-        **Votes**: {random_movie['numVotes'] / 1000:.1f}k, 
+        **IMDB** / **Rating**: {random_movie['averageRating']} ⭐,
+        **Votes**: {random_movie['numVotes'] / 1000:.1f}k,
         **View**: [link]({imdb_link}).
 
         **Region**: {random_movie['country_region']},
@@ -140,7 +139,7 @@ if total_movies > 0:
             poster_url = data_api.get_poster_url(random_movie)
             st.markdown(f"[![{poster_caption}]({poster_url})]({imdb_link})")
 
-    st.write('Random Movie Roulette: randomly choose a good movie to watch !') 
+    st.write('Random Movie Roulette: randomly choose a good movie to watch !')
 
     st.button("Try again ?", type="primary", on_click=choose_next)
 
